@@ -65,17 +65,17 @@ import { useQuery } from "@tanstack/react-query";
 import { type Livsmedelsida } from "~/lib/models/livsmedel";
 
 export default function Dashboard() {
-  const { data } = useQuery<Livsmedelsida[]>({
+  const { data } = useQuery<Livsmedelsida>({
     queryKey: ["livsmedel"],
     queryFn: getAll,
   });
 
-  async function getAll(): Promise<Livsmedelsida[]> {
+  async function getAll(): Promise<Livsmedelsida> {
     const proxyUrl = "https://cors-anywhere.herokuapp.com/"; //https://cors-anywhere.herokuapp.com/
     const targetUrl =
       "https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel?offset=0&limit=20&sprak=1";
     const response = await fetch(proxyUrl + targetUrl);
-    const result = (await response.json()) as Livsmedelsida[];
+    const result = (await response.json()) as Livsmedelsida;
 
     return result;
   }
