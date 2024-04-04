@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  CircleUserRound,
   File,
   Home,
   LineChart,
@@ -271,13 +272,7 @@ export default function Dashboard() {
                 size="icon"
                 className="overflow-hidden rounded-full"
               >
-                <Image
-                  src="/placeholder-user.jpg"
-                  width={36}
-                  height={36}
-                  alt="Avatar"
-                  className="overflow-hidden"
-                />
+                <CircleUserRound />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
