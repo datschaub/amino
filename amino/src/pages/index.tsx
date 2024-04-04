@@ -61,7 +61,26 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 
+import { useQuery } from "@tanstack/react-query";
+import { type Livsmedelsida } from "~/lib/models/livsmedel";
+
 export default function Dashboard() {
+  const { data } = useQuery<Livsmedelsida[]>({
+    queryKey: ["livsmedel"],
+    queryFn: getAll
+  });
+
+  async function getAll(): Promise<Livsmedelsida[]> {
+    const proxyUrl = ''; //https://cors-anywhere.herokuapp.com/
+    const targetUrl = 'https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel?offset=0&limit=20&sprak=1';
+    const response = await fetch(proxyUrl + targetUrl);
+    const result = await response.json() as Livsmedelsida[];
+
+    return result;
+  }
+
+  console.log(data)
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -217,7 +236,7 @@ export default function Dashboard() {
               </nav>
             </SheetContent>
           </Sheet>
-          <Breadcrumb className="hidden md:flex">
+          {/* <Breadcrumb className="hidden md:flex">
             <BreadcrumbList>
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
@@ -235,7 +254,7 @@ export default function Dashboard() {
                 <BreadcrumbPage>All Products</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
-          </Breadcrumb>
+          </Breadcrumb> */}
           <div className="relative ml-auto flex-1 md:grow-0">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -329,9 +348,6 @@ export default function Dashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="hidden w-[100px] sm:table-cell">
-                          <span className="sr-only">Image</span>
-                        </TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="hidden md:table-cell">
@@ -350,15 +366,6 @@ export default function Dashboard() {
                     </TableHeader>
                     <TableBody>
                       <TableRow>
-                        <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt="Product image"
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src="/placeholder.svg"
-                            width="64"
-                          />
-                        </TableCell>
                         <TableCell className="font-medium">
                           Laser Lemonade Machine
                         </TableCell>
@@ -395,15 +402,6 @@ export default function Dashboard() {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt="Product image"
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src="/placeholder.svg"
-                            width="64"
-                          />
-                        </TableCell>
                         <TableCell className="font-medium">
                           Hypernova Headphones
                         </TableCell>
@@ -440,15 +438,6 @@ export default function Dashboard() {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt="Product image"
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src="/placeholder.svg"
-                            width="64"
-                          />
-                        </TableCell>
                         <TableCell className="font-medium">
                           AeroGlow Desk Lamp
                         </TableCell>
@@ -485,15 +474,6 @@ export default function Dashboard() {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt="Product image"
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src="/placeholder.svg"
-                            width="64"
-                          />
-                        </TableCell>
                         <TableCell className="font-medium">
                           TechTonic Energy Drink
                         </TableCell>
@@ -530,15 +510,6 @@ export default function Dashboard() {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt="Product image"
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src="/placeholder.svg"
-                            width="64"
-                          />
-                        </TableCell>
                         <TableCell className="font-medium">
                           Gamer Gear Pro Controller
                         </TableCell>
@@ -575,15 +546,6 @@ export default function Dashboard() {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt="Product image"
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src="/placeholder.svg"
-                            width="64"
-                          />
-                        </TableCell>
                         <TableCell className="font-medium">
                           Luminous VR Headset
                         </TableCell>
