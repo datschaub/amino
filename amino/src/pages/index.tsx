@@ -62,18 +62,59 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 
-import { useQuery } from "@tanstack/react-query";
-import { type Livsmedelsida } from "~/lib/models/livsmedel";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import type {
+  Naringsvarden,
+  Livsmedelsida,
+  Livsmedel,
+} from "~/lib/models/livsmedel";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+
+  const [livsmedelData, setLivsmedelData] = useState<Livsmedel[]>([]);
+
   const { data } = useQuery<Livsmedelsida>({
     queryKey: ["livsmedel"],
     queryFn: getAll,
   });
 
+  const naringsvardenQueries = useQueries<Naringsvarden[]>({
+    queries:
+      data?.livsmedel?.map((livsmedel: Livsmedel) => ({
+        queryKey: ["naringsvarden", livsmedel.nummer],
+        queryFn: () => getNaringsvarden(livsmedel.nummer.toString()),
+      })) ?? [],
+  });
+
+  useEffect(() => {
+    if (livsmedelData.length === 0 && naringsvardenQueries.every(query => query.isSuccess)) {
+      const updatedLivsmedelData = data?.livsmedel?.map((livsmedel, index) => {
+        const naringsvarden = naringsvardenQueries[index]?.data as Naringsvarden[];
+        const protein = naringsvarden?.find(naringsvarde => naringsvarde.euroFIRkod === "PROT")?.varde;
+        const kcal = naringsvarden?.find(naringsvarde => naringsvarde.namn === "Energi (kcal)")?.varde;
+        return {
+          ...livsmedel,
+          naringsvarden,
+          protein,
+          kcal,
+        };
+      });
+  
+      setLivsmedelData(updatedLivsmedelData ?? []);
+    }
+  }, [naringsvardenQueries, data, livsmedelData.length]);
+  
   async function getAll(): Promise<Livsmedelsida> {
-    const response = await fetch('/api/proxy/getAll');
+    const response = await fetch("/api/proxy/getAll");
     const result = (await response.json()) as Livsmedelsida;
+    return result;
+  }
+
+  async function getNaringsvarden(nummer: string): Promise<Naringsvarden[]> {
+    const response = await fetch(`/api/proxy/${nummer}`);
+    const result = (await response.json()) as Naringsvarden[];
+
     return result;
   }
 
@@ -338,20 +379,24 @@ export default function Dashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
+                        <TableCell>Nummer</TableCell>
                         <TableCell>Namn</TableCell>
                         <TableCell>Kcal</TableCell>
                         <TableCell>Protein</TableCell>
+                        <TableCell>Kcal/gram protein</TableCell>
                         <TableHead>
                           <span className="sr-only">Actions</span>
                         </TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {data?.livsmedel?.map((item) => (
+                      {livsmedelData?.map((item) => (
                         <TableRow key={item?.nummer}>
+                          <TableCell>{item?.nummer}</TableCell>
                           <TableCell>{item?.namn ?? ""}</TableCell>
-                          <TableCell>100kcal</TableCell>
-                          <TableCell>12g</TableCell>
+                          <TableCell>{item.kcal}</TableCell>
+                          <TableCell>{item.protein}</TableCell>
+                          <TableCell>{item.protein === 0 ? item.kcal : (item.kcal / item.protein).toFixed(2)}</TableCell>
                           <TableCell>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -378,8 +423,8 @@ export default function Dashboard() {
                 </CardContent>
                 <CardFooter>
                   <div className="text-xs text-muted-foreground">
-                    Visar <strong>1-20</strong> av <strong>{data?.livsmedel?.length}</strong>{" "}
-                    livsmedel
+                    Visar <strong>1-20</strong> av{" "}
+                    <strong>{data?.livsmedel?.length}</strong> livsmedel
                   </div>
                 </CardFooter>
               </Card>
