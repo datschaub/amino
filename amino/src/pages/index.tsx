@@ -26,6 +26,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
+import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -69,9 +70,9 @@ import type {
   Livsmedel,
 } from "~/lib/models/livsmedel";
 import { useEffect, useState } from "react";
+import { ProteinCalc } from "~/components/proteinCalc";
 
 export default function Dashboard() {
-
   const [livsmedelData, setLivsmedelData] = useState<Livsmedel[]>([]);
 
   const { data } = useQuery<Livsmedelsida>({
@@ -88,11 +89,19 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    if (livsmedelData.length === 0 && naringsvardenQueries.every(query => query.isSuccess)) {
+    if (
+      livsmedelData.length === 0 &&
+      naringsvardenQueries.every((query) => query.isSuccess)
+    ) {
       const updatedLivsmedelData = data?.livsmedel?.map((livsmedel, index) => {
-        const naringsvarden = naringsvardenQueries[index]?.data as Naringsvarden[];
-        const protein = naringsvarden?.find(naringsvarde => naringsvarde.euroFIRkod === "PROT")?.varde;
-        const kcal = naringsvarden?.find(naringsvarde => naringsvarde.namn === "Energi (kcal)")?.varde;
+        const naringsvarden = naringsvardenQueries[index]
+          ?.data as Naringsvarden[];
+        const protein = naringsvarden?.find(
+          (naringsvarde) => naringsvarde.euroFIRkod === "PROT",
+        )?.varde;
+        const kcal = naringsvarden?.find(
+          (naringsvarde) => naringsvarde.namn === "Energi (kcal)",
+        )?.varde;
         return {
           ...livsmedel,
           naringsvarden,
@@ -100,11 +109,11 @@ export default function Dashboard() {
           kcal,
         };
       });
-  
+
       setLivsmedelData(updatedLivsmedelData ?? []);
     }
   }, [naringsvardenQueries, data, livsmedelData.length]);
-  
+
   async function getAll(): Promise<Livsmedelsida> {
     const response = await fetch("/api/proxy/getAll");
     const result = (await response.json()) as Livsmedelsida;
@@ -321,6 +330,7 @@ export default function Dashboard() {
           </DropdownMenu>
         </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+          <ProteinCalc />
           <Tabs defaultValue="all">
             <div className="flex items-center">
               <TabsList>
@@ -396,7 +406,11 @@ export default function Dashboard() {
                           <TableCell>{item?.namn ?? ""}</TableCell>
                           <TableCell>{item.kcal}</TableCell>
                           <TableCell>{item.protein}</TableCell>
-                          <TableCell>{item.protein === 0 ? item.kcal : (item.kcal / item.protein).toFixed(2)}</TableCell>
+                          <TableCell>
+                            {item.protein === 0
+                              ? item.kcal
+                              : (item.kcal / item.protein).toFixed(2)}
+                          </TableCell>
                           <TableCell>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
