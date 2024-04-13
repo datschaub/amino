@@ -110,7 +110,7 @@ export default function Dashboard() {
         };
       });
 
-      setLivsmedelData(updatedLivsmedelData ?? []);
+      setLivsmedelData(updatedLivsmedelData as Livsmedel[] ?? []);
     }
   }, [naringsvardenQueries, data, livsmedelData.length]);
 
