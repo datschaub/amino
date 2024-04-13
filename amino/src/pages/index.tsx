@@ -72,16 +72,10 @@ export default function Dashboard() {
   });
 
   async function getAll(): Promise<Livsmedelsida> {
-    const proxyUrl = "https://cors-anywhere.herokuapp.com/"; //https://cors-anywhere.herokuapp.com/
-    const targetUrl =
-      "https://dataportal.livsmedelsverket.se/livsmedel/api/v1/livsmedel?offset=0&limit=20&sprak=1";
-    const response = await fetch(proxyUrl + targetUrl);
+    const response = await fetch('/api/proxy/getAll');
     const result = (await response.json()) as Livsmedelsida;
-
     return result;
   }
-
-  console.log(data);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
