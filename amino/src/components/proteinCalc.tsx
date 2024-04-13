@@ -41,8 +41,7 @@ import { useToast } from "~/components/ui/use-toast";
 import { useState } from "react";
 
 export const ProteinCalc: React.FC = () => {
-
-    const [calculatedValue, setCalculatedValue] = useState<number>(0);
+  const [calculatedValue, setCalculatedValue] = useState<number>(0);
 
   const formSchema = z.object({
     kcal: z.coerce
@@ -63,9 +62,7 @@ export const ProteinCalc: React.FC = () => {
       .min(1, { message: "Protein should be at least 1" }),
   });
 
-  const { handleSubmit, formState, ...form } = useForm<
-    z.infer<typeof formSchema>
-  >({
+  const { handleSubmit, ...form } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       kcal: 0,
@@ -75,7 +72,7 @@ export const ProteinCalc: React.FC = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const calculatedValue = (values.kcal / values.protein).toFixed(2);
-    setCalculatedValue(calculatedValue);
+    setCalculatedValue(Number(calculatedValue));
   }
 
   return (
@@ -153,12 +150,14 @@ export const ProteinCalc: React.FC = () => {
               </TableBody>
             </Table>
           </CardContent>
-          <CardFooter className="justify-center flex-col border-t p-4">
+          <CardFooter className="flex-col justify-center border-t p-4">
             <Button size="sm" variant="ghost" className="gap-1">
               <PlusCircle className="h-3.5 w-3.5" />
               Lägg till livsmedel
             </Button>
-            <Button className="" type="submit">Räkna ut</Button>
+            <Button className="" type="submit">
+              Räkna ut
+            </Button>
           </CardFooter>
         </Card>
       </form>
