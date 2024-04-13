@@ -20,24 +20,16 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import type {
-  Naringsvarden,
-  Livsmedelsida,
-  Livsmedel,
-} from "~/lib/models/livsmedel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { useToast } from "~/components/ui/use-toast";
 import { useState } from "react";
 
 export const ProteinCalc: React.FC = () => {
@@ -50,7 +42,6 @@ export const ProteinCalc: React.FC = () => {
         invalid_type_error: "Calories must be a number",
       })
       .int()
-      .positive()
       .min(1, { message: "Calories should be at least 1" }),
     protein: z.coerce
       .number({
@@ -58,11 +49,10 @@ export const ProteinCalc: React.FC = () => {
         invalid_type_error: "Protein must be a number",
       })
       .int()
-      .positive()
       .min(1, { message: "Protein should be at least 1" }),
   });
 
-  const { handleSubmit, ...form } = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       kcal: 0,
@@ -77,7 +67,7 @@ export const ProteinCalc: React.FC = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
             <CardTitle>Protein per kcal-kalkylator</CardTitle>
