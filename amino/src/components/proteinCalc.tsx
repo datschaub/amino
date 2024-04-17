@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { PlusCircle, Trash2 } from "lucide-react";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
@@ -34,9 +35,11 @@ import { useState } from "react";
 import { LivsmedelCompare } from "~/lib/models/livsmedel";
 
 export const ProteinCalc: React.FC = () => {
-  const [calculatedValue, setCalculatedValue] = useState<number>(0);
+  // Define a ref for the counter
+  const comparisonCounter = useRef<number>(0);
+  //const [calculatedValue, setCalculatedValue] = useState<number>(0);
   const [comparisons, setComparisons] = useState<LivsmedelCompare[]>([
-    { id: Date.now(), namn: "", protein: 0, kcal: 0 },
+    { id: comparisonCounter.current, namn: "", protein: 0, kcal: 0 },
   ]);
 
   const formSchema = z.object({
@@ -76,14 +79,24 @@ export const ProteinCalc: React.FC = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // const calculatedValue = (values.kcal / values.protein).toFixed(2);
+    console.log(form.getValues());
+    //const calculatedValue = (values.kcal / values.protein).toFixed(2);
     // setCalculatedValue(Number(calculatedValue));
+    setComparisons((prevComparisons) =>
+      prevComparisons.map((comparison, index) => ({
+        ...comparison,
+        kcalPerProtein:
+        form.getValues().protein[comparison.id] !== 0
+            ? Number((form.getValues().kcal[comparison.id] / form.getValues().protein[comparison.id]).toFixed(2))
+            : 0,
+      })),
+    );
   }
 
   const addComparison = () => {
     setComparisons((prevComparisons) => [
       ...prevComparisons,
-      { id: Date.now(), namn: "", protein: 0, kcal: 0 },
+      { id: comparisonCounter.current++, namn: "", protein: 0, kcal: 0 },
     ]);
   };
 
@@ -190,7 +203,7 @@ export const ProteinCalc: React.FC = () => {
                         >
                           Kcal/Protein
                         </Label>
-                        {calculatedValue}
+                        {comparison.kcalPerProtein ?? 0}
                       </TableCell>
                       <TableCell>
                         <Trash2

@@ -25,6 +25,7 @@ export type LivsmedelBase = {
 
 export type LivsmedelCompare = LivsmedelBase & {
   id: number;
+  kcalPerProtein?: number;
 }
 
 type Meta = {
