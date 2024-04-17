@@ -94,14 +94,18 @@ export default function Dashboard() {
       naringsvardenQueries.every((query) => query.isSuccess)
     ) {
       const updatedLivsmedelData = data?.livsmedel?.map((livsmedel, index) => {
+
         const naringsvarden = naringsvardenQueries[index]
           ?.data as Naringsvarden[];
+
         const protein = naringsvarden?.find(
           (naringsvarde) => naringsvarde.euroFIRkod === "PROT",
         )?.varde;
+
         const kcal = naringsvarden?.find(
           (naringsvarde) => naringsvarde.namn === "Energi (kcal)",
         )?.varde;
+
         return {
           ...livsmedel,
           naringsvarden,
@@ -389,7 +393,7 @@ export default function Dashboard() {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableCell>Nummer</TableCell>
+                        <TableCell>#</TableCell>
                         <TableCell>Namn</TableCell>
                         <TableCell>Kcal</TableCell>
                         <TableCell>Protein</TableCell>

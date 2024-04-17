@@ -4,21 +4,28 @@ type Link = {
   method?: string;
 };
 
-export type Livsmedel = {
+export type Livsmedel = LivsmedelBase & {
   livsmedelsTypId: number;
   livsmedelsTyp?: string;
   nummer: number;
   version: string;
-  namn?: string;
   vetenskapligtNamn?: string;
   projekt?: string;
   analys?: string;
   tillagningsmetod?: string;
   links?: Link[];
   naringsvarden?: Naringsvarden[];
+};
+
+export type LivsmedelBase = {
+  namn?: string;
   protein: number;
   kcal: number;
-};
+}
+
+export type LivsmedelCompare = LivsmedelBase & {
+  id: number;
+}
 
 type Meta = {
   totalRecords: number;
