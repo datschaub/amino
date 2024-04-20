@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { PlusCircle, Trash2 } from "lucide-react";
-import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -34,6 +33,7 @@ import {
 import { useState } from "react";
 import { LivsmedelCompare } from "~/lib/models/livsmedel";
 import clsx from "clsx";
+import { Separator } from "~/components/ui/separator";
 
 export const ProteinCalc: React.FC = () => {
   // Define a ref for the counter
@@ -84,6 +84,9 @@ export const ProteinCalc: React.FC = () => {
     setComparisons((prevComparisons) =>
       prevComparisons.map((comparison) => ({
         ...comparison,
+        namn: values.namn[comparison.id] ?? "",
+        kcal: values.kcal[comparison.id] ?? 0,
+        protein: values.protein[comparison.id] ?? 0,
         kcalPerProtein:
           values.protein[comparison.id] !== 0
             ? Number(
@@ -124,117 +127,105 @@ export const ProteinCalc: React.FC = () => {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card>
           <CardHeader>
-            <CardTitle>Protein per kcal-kalkylator</CardTitle>
+            <CardTitle>Kcal/protein-kalkylator</CardTitle>
             <CardDescription>
               Räknar ut hur många kalorier ett livsmedel innehåller per gram
-              protein. Ju lägre desto bättre.
+              protein. Ett gram protein är 4 kcal.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Livsmedel</TableHead>
-                  <TableHead>Kcal</TableHead>
-                  <TableHead>Protein</TableHead>
-                  <TableHead>Kcal/gram protein</TableHead>
-                  <TableHead>
-                    <span className="sr-only">Actions</span>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {comparisons.map((comparison, index) => {
-                  return (
-                    <TableRow key={comparison.id}>
-                      <TableCell>
-                        <FormField
-                          control={form.control}
-                          name={`namn.${comparison.id}`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  type="text"
-                                  placeholder="Namn"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <FormField
-                          control={form.control}
-                          name={`kcal.${comparison.id}`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  placeholder="Kcal"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <FormField
-                          control={form.control}
-                          name={`protein.${comparison.id}`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  placeholder="Protein"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Label
-                          htmlFor={`kcalprotein-${comparison.id}`}
-                          className="sr-only"
-                        >
-                          Kcal/Protein
-                        </Label>
-                        {comparison.kcalPerProtein ?? 0}
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          disabled={comparisons.length <= 1}
-                          onClick={() => removeComparison(comparison.id)}
-                        >
-                          <Trash2 className={`h-3.5 w-3.5`} />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="gap-1"
-              type="button"
-              onClick={addComparison}
-            >
-              <PlusCircle className="h-3.5 w-3.5" />
-              Lägg till livsmedel
-            </Button>
+            {comparisons.map((comparison) => {
+              return (
+                <div
+                  key={comparison.id}
+                  className="my-2 flex flex-col gap-2 rounded-md border border-b-2 px-4 py-2"
+                >
+                  <div className="flex flex-row items-center justify-start gap-4">
+                    <span className="w-full max-w-20">Livsmedel:</span>{" "}
+                    <FormField
+                      control={form.control}
+                      name={`namn.${comparison.id}`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type="text"
+                              placeholder="Sojabönor"
+                              className="w-full max-w-full"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-row items-center justify-start gap-4">
+                    <span className="w-full max-w-20">Kcal:</span>{" "}
+                    <FormField
+                      control={form.control}
+                      name={`kcal.${comparison.id}`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="0"
+                              className="w-full max-w-full"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-row items-center justify-start gap-4">
+                    <span className="w-full max-w-20">Protein:</span>{" "}
+                    <FormField
+                      control={form.control}
+                      name={`protein.${comparison.id}`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="0"
+                              className="w-full max-w-full"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <Separator className="mt-2" />
+                  <div className="flex justify-center">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={comparisons.length <= 1}
+                      onClick={() => removeComparison(comparison.id)}
+                    >
+                      <Trash2 className={`h-3.5 w-3.5`} />
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="my-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="gap-1"
+                type="button"
+                onClick={addComparison}
+              >
+                <PlusCircle className="h-3.5 w-3.5" />
+                Lägg till livsmedel
+              </Button>
+            </div>
           </CardContent>
           <CardFooter className="flex-col justify-center gap-2 border-t p-4">
             <Button className="" type="submit">
@@ -242,6 +233,24 @@ export const ProteinCalc: React.FC = () => {
             </Button>
           </CardFooter>
         </Card>
+        <Table>
+          <TableHeader>
+            <TableRow className="font-medium">
+              <TableCell>Livsmedel</TableCell>
+              <TableCell>Kcal/gram protein</TableCell>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {comparisons
+              .sort((a, b) => (a.kcalPerProtein ?? 0) - (b.kcalPerProtein ?? 0))
+              .map((comparison) => (
+                <TableRow key={comparison.id}>
+                  <TableCell>{comparison.namn}</TableCell>
+                  <TableCell>{comparison.kcalPerProtein}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
       </form>
     </Form>
   );
