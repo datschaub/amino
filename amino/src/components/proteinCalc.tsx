@@ -33,6 +33,7 @@ import {
 } from "~/components/ui/form";
 import { useState } from "react";
 import { LivsmedelCompare } from "~/lib/models/livsmedel";
+import clsx from "clsx";
 
 export const ProteinCalc: React.FC = () => {
   // Define a ref for the counter
@@ -79,24 +80,28 @@ export const ProteinCalc: React.FC = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(form.getValues());
-    //const calculatedValue = (values.kcal / values.protein).toFixed(2);
-    // setCalculatedValue(Number(calculatedValue));
+    console.log(values);
     setComparisons((prevComparisons) =>
-      prevComparisons.map((comparison, index) => ({
+      prevComparisons.map((comparison) => ({
         ...comparison,
         kcalPerProtein:
-        form.getValues().protein[comparison.id] !== 0
-            ? Number((form.getValues().kcal[comparison.id] / form.getValues().protein[comparison.id]).toFixed(2))
+          values.protein[comparison.id] !== 0
+            ? Number(
+                (
+                  (values.kcal[comparison.id] ?? 0) /
+                  (values.protein[comparison.id] ?? 0)
+                )?.toFixed(2),
+              )
             : 0,
       })),
     );
   }
 
   const addComparison = () => {
+    const newId = ++comparisonCounter.current;
     setComparisons((prevComparisons) => [
       ...prevComparisons,
-      { id: comparisonCounter.current++, namn: "", protein: 0, kcal: 0 },
+      { id: newId, namn: "", protein: 0, kcal: 0 },
     ]);
   };
 
@@ -206,10 +211,14 @@ export const ProteinCalc: React.FC = () => {
                         {comparison.kcalPerProtein ?? 0}
                       </TableCell>
                       <TableCell>
-                        <Trash2
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          disabled={comparisons.length <= 1}
                           onClick={() => removeComparison(comparison.id)}
-                          className="h-3.5 w-3.5"
-                        />
+                        >
+                          <Trash2 className={`h-3.5 w-3.5`} />
+                        </Button>
                       </TableCell>
                     </TableRow>
                   );
