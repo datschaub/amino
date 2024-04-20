@@ -140,7 +140,7 @@ export default function Dashboard() {
             className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
           >
             <Package2 className="h-4 w-4 transition-all group-hover:scale-110" />
-            <span className="sr-only">Acme Inc</span>
+            <span className="sr-only">ProteIndex</span>
           </Link>
           <TooltipProvider>
             <Tooltip>
@@ -309,7 +309,7 @@ export default function Dashboard() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search..."
+              placeholder="Sök..."
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
           </div>
@@ -335,7 +335,7 @@ export default function Dashboard() {
         </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <ProteinCalc />
-          <Tabs defaultValue="all">
+          {/* <Tabs defaultValue="all">
             <div className="flex items-center">
               <TabsList>
                 <TabsTrigger value="all">All</TabsTrigger>
@@ -447,7 +447,7 @@ export default function Dashboard() {
                 </CardFooter>
               </Card>
             </TabsContent>
-          </Tabs>
+          </Tabs> */}
         </main>
       </div>
     </div>
