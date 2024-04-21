@@ -152,7 +152,7 @@ export const ProteinCalc: React.FC = () => {
               protein. Ett gram protein är 4 kcal.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-4 sm:flex-row">
+          <CardContent className="flex flex-col gap-4 sm:flex-row flex-wrap">
             {comparisons.map((comparison) => {
               return (
                 <Card key={comparison.id} className="">
