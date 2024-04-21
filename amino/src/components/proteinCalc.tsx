@@ -237,6 +237,7 @@ export const ProteinCalc: React.FC = () => {
               variant="destructive"
               className="gap-1"
               type="button"
+              disabled={comparisons.length <= 1}
               onClick={clearAll}
             >
               <Trash2 className="h-3.5 w-3.5" />
