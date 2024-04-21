@@ -32,16 +32,18 @@ import {
 } from "~/components/ui/form";
 import { useState } from "react";
 import { LivsmedelCompare } from "~/lib/models/livsmedel";
-import clsx from "clsx";
 import { Separator } from "~/components/ui/separator";
 
 export const ProteinCalc: React.FC = () => {
   // Define a ref for the counter
   const comparisonCounter = useRef<number>(0);
-  //const [calculatedValue, setCalculatedValue] = useState<number>(0);
   const [comparisons, setComparisons] = useState<LivsmedelCompare[]>([
     { id: comparisonCounter.current, namn: "", protein: 0, kcal: 0 },
   ]);
+
+  const sortedComparisons = [...comparisons].sort(
+    (a, b) => (a.kcalPerProtein ?? 0) - (b.kcalPerProtein ?? 0),
+  );
 
   const formSchema = z.object({
     namn: z.array(
@@ -241,14 +243,12 @@ export const ProteinCalc: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {comparisons
-              .sort((a, b) => (a.kcalPerProtein ?? 0) - (b.kcalPerProtein ?? 0))
-              .map((comparison) => (
-                <TableRow key={comparison.id}>
-                  <TableCell>{comparison.namn}</TableCell>
-                  <TableCell>{comparison.kcalPerProtein}</TableCell>
-                </TableRow>
-              ))}
+            {sortedComparisons.map((comparison) => (
+              <TableRow key={comparison.id}>
+                <TableCell>{comparison.namn}</TableCell>
+                <TableCell>{comparison.kcalPerProtein}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </form>
