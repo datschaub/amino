@@ -41,10 +41,9 @@ export const ProteinCalc: React.FC = () => {
   const [comparisons, setComparisons] = useState<LivsmedelCompare[]>([
     { id: comparisonCounter.current, namn: "", protein: 0, kcal: 0 },
   ]);
-
-  const sortedComparisons = [...comparisons].sort(
-    (a, b) => (a.kcalPerProtein ?? 0) - (b.kcalPerProtein ?? 0),
-  );
+  const [sortedComparisons, setSortedComparisons] = useState<
+    LivsmedelCompare[]
+  >([]);
 
   const formSchema = z.object({
     namn: z.array(
@@ -101,6 +100,24 @@ export const ProteinCalc: React.FC = () => {
             : 0,
       })),
     );
+
+    const newComparisons = comparisons.map((comparison) => ({
+      ...comparison,
+      namn: values.namn[comparison.id] ?? "",
+      kcal: values.kcal[comparison.id] ?? 0,
+      protein: values.protein[comparison.id] ?? 0,
+      kcalPerProtein:
+        values.protein[comparison.id] !== 0
+          ? Number(
+              (
+                (values.kcal[comparison.id] ?? 0) /
+                (values.protein[comparison.id] ?? 0)
+              )?.toFixed(2),
+            )
+          : 0,
+    }));
+    
+    setSortedComparisons([...newComparisons].sort((a, b) => (a.kcalPerProtein ?? 0) - (b.kcalPerProtein ?? 0)));
   }
 
   const addComparison = () => {
@@ -238,12 +255,12 @@ export const ProteinCalc: React.FC = () => {
               </TableHeader>
               <TableBody>
                 {sortedComparisons.map((comparison, index) => (
-                  <TableRow key={comparison.id}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{comparison.namn}</TableCell>
-                    <TableCell>{comparison.kcalPerProtein}</TableCell>
-                  </TableRow>
-                ))}
+                    <TableRow key={comparison.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{comparison.namn}</TableCell>
+                      <TableCell>{comparison.kcalPerProtein}</TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </CardContent>
