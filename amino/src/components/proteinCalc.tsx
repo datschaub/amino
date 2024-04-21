@@ -235,22 +235,31 @@ export const ProteinCalc: React.FC = () => {
             </Button>
           </CardFooter>
         </Card>
-        <Table>
-          <TableHeader>
-            <TableRow className="font-medium">
-              <TableCell>Livsmedel</TableCell>
-              <TableCell>Kcal/gram protein</TableCell>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {sortedComparisons.map((comparison) => (
-              <TableRow key={comparison.id}>
-                <TableCell>{comparison.namn}</TableCell>
-                <TableCell>{comparison.kcalPerProtein}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <Card className="mt-2">
+          <CardHeader>
+            <CardTitle>Ranking</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow className="font-medium">
+                  <TableCell>#</TableCell>
+                  <TableCell>Livsmedel</TableCell>
+                  <TableCell>Kcal/gram protein</TableCell>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sortedComparisons.map((comparison, index) => (
+                  <TableRow key={comparison.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{comparison.namn}</TableCell>
+                    <TableCell>{comparison.kcalPerProtein}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </form>
     </Form>
   );
