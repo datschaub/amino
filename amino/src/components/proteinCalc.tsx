@@ -16,7 +16,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
@@ -32,11 +31,10 @@ import {
 } from "~/components/ui/form";
 import { useState } from "react";
 import { LivsmedelCompare } from "~/lib/models/livsmedel";
-import { Separator } from "~/components/ui/separator";
 import { Label } from "~/components/ui/label";
 
 export const ProteinCalc: React.FC = () => {
-  // Define a ref for the counter
+  
   const comparisonCounter = useRef<number>(0);
   const [comparisons, setComparisons] = useState<LivsmedelCompare[]>([
     { id: comparisonCounter.current, namn: "", protein: 0, kcal: 0 },
@@ -82,42 +80,32 @@ export const ProteinCalc: React.FC = () => {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    setComparisons((prevComparisons) =>
-      prevComparisons.map((comparison) => ({
-        ...comparison,
-        namn: values.namn[comparison.id] ?? "",
-        kcal: values.kcal[comparison.id] ?? 0,
-        protein: values.protein[comparison.id] ?? 0,
-        kcalPerProtein:
-          values.protein[comparison.id] !== 0
-            ? Number(
-                (
-                  (values.kcal[comparison.id] ?? 0) /
-                  (values.protein[comparison.id] ?? 0)
-                )?.toFixed(2),
-              )
-            : 0,
-      })),
-    );
+    const newComparisons = comparisons.map((comparison) => {
+      const namn = values.namn[comparison.id] ?? "";
+      const kcal = values.kcal[comparison.id] ?? 0;
+      const protein = values.protein[comparison.id] ?? 0;
+      const kcalPerProtein = Number(
+        (
+          (values.kcal[comparison.id] ?? 0) /
+          (values.protein[comparison.id] ?? 0)
+        )?.toFixed(2),
+      );
 
-    const newComparisons = comparisons.map((comparison) => ({
-      ...comparison,
-      namn: values.namn[comparison.id] ?? "",
-      kcal: values.kcal[comparison.id] ?? 0,
-      protein: values.protein[comparison.id] ?? 0,
-      kcalPerProtein:
-        values.protein[comparison.id] !== 0
-          ? Number(
-              (
-                (values.kcal[comparison.id] ?? 0) /
-                (values.protein[comparison.id] ?? 0)
-              )?.toFixed(2),
-            )
-          : 0,
-    }));
-    
-    setSortedComparisons([...newComparisons].sort((a, b) => (a.kcalPerProtein ?? 0) - (b.kcalPerProtein ?? 0)));
+      return {
+        ...comparison,
+        namn,
+        kcal,
+        protein,
+        kcalPerProtein,
+      };
+    });
+
+    setComparisons(newComparisons);
+    setSortedComparisons(
+      [...newComparisons].sort(
+        (a, b) => (a.kcalPerProtein ?? 0) - (b.kcalPerProtein ?? 0),
+      ),
+    );
   }
 
   const addComparison = () => {
@@ -255,12 +243,12 @@ export const ProteinCalc: React.FC = () => {
               </TableHeader>
               <TableBody>
                 {sortedComparisons.map((comparison, index) => (
-                    <TableRow key={comparison.id}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{comparison.namn}</TableCell>
-                      <TableCell>{comparison.kcalPerProtein}</TableCell>
-                    </TableRow>
-                  ))}
+                  <TableRow key={comparison.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{comparison.namn}</TableCell>
+                    <TableCell>{comparison.kcalPerProtein}</TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </CardContent>
