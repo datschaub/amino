@@ -33,6 +33,7 @@ import {
 import { useState } from "react";
 import { LivsmedelCompare } from "~/lib/models/livsmedel";
 import { Separator } from "~/components/ui/separator";
+import { Label } from "~/components/ui/label";
 
 export const ProteinCalc: React.FC = () => {
   // Define a ref for the counter
@@ -135,75 +136,62 @@ export const ProteinCalc: React.FC = () => {
               protein. Ett gram protein är 4 kcal.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col gap-4 sm:flex-row">
             {comparisons.map((comparison) => {
               return (
-                <div
-                  key={comparison.id}
-                  className="my-2 flex flex-col gap-2 rounded-md border border-b-2 px-4 py-2"
-                >
-                  <div className="flex flex-row items-center justify-start gap-4">
-                    <span className="w-full max-w-20">Livsmedel:</span>{" "}
+                <Card key={comparison.id} className="">
+                  <CardContent className="space-y-2 p-4">
                     <FormField
                       control={form.control}
                       name={`namn.${comparison.id}`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input
-                              type="text"
-                              placeholder="Sojabönor"
-                              className="w-full max-w-full"
-                              {...field}
-                            />
+                            <div className="grid w-full max-w-sm items-center gap-1.5">
+                              <Label htmlFor="email">Livsmedel</Label>
+                              <Input
+                                type="text"
+                                placeholder="Sojabönor"
+                                {...field}
+                              />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
-                  <div className="flex flex-row items-center justify-start gap-4">
-                    <span className="w-full max-w-20">Kcal:</span>{" "}
                     <FormField
                       control={form.control}
                       name={`kcal.${comparison.id}`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="0"
-                              className="w-full max-w-full"
-                              {...field}
-                            />
+                            <div className="grid w-full max-w-sm items-center gap-1.5">
+                              <Label htmlFor="email">Kcal</Label>
+                              <Input type="number" placeholder="0" {...field} />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
-                  <div className="flex flex-row items-center justify-start gap-4">
-                    <span className="w-full max-w-20">Protein:</span>{" "}
                     <FormField
                       control={form.control}
                       name={`protein.${comparison.id}`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="0"
-                              className="w-full max-w-full"
-                              {...field}
-                            />
+                            <div className="grid w-full max-w-sm items-center gap-1.5">
+                              <Label htmlFor="email">Protein</Label>
+                              <Input type="number" placeholder="0" {...field} />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
-                  <Separator className="mt-2" />
-                  <div className="flex justify-center">
+                  </CardContent>
+                  <CardFooter className="border-t p-1">
                     <Button
                       variant="ghost"
                       size="icon"
@@ -212,23 +200,23 @@ export const ProteinCalc: React.FC = () => {
                     >
                       <Trash2 className={`h-3.5 w-3.5`} />
                     </Button>
-                  </div>
-                </div>
+                  </CardFooter>
+                </Card>
               );
             })}
-            <div className="my-2">
-              <Button
-                size="sm"
-                variant="ghost"
-                className="gap-1"
-                type="button"
-                onClick={addComparison}
-              >
-                <PlusCircle className="h-3.5 w-3.5" />
-                Lägg till livsmedel
-              </Button>
-            </div>
           </CardContent>
+          <div className="p-4 pt-0">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="gap-1"
+              type="button"
+              onClick={addComparison}
+            >
+              <PlusCircle className="h-3.5 w-3.5" />
+              Lägg till livsmedel
+            </Button>
+          </div>
           <CardFooter className="flex-col justify-center gap-2 border-t p-4">
             <Button className="" type="submit">
               Räkna ut
