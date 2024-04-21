@@ -30,11 +30,10 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { useState } from "react";
-import { LivsmedelCompare } from "~/lib/models/livsmedel";
+import { type LivsmedelCompare } from "~/lib/models/livsmedel";
 import { Label } from "~/components/ui/label";
 
 export const ProteinCalc: React.FC = () => {
-  
   const comparisonCounter = useRef<number>(0);
   const [comparisons, setComparisons] = useState<LivsmedelCompare[]>([
     { id: comparisonCounter.current, namn: "", protein: 0, kcal: 0 },
@@ -130,6 +129,18 @@ export const ProteinCalc: React.FC = () => {
     });
   };
 
+  const clearAll = () => {
+    comparisonCounter.current = 0
+    form.reset({
+      namn: [""],
+      kcal: [0],
+      protein: [0],
+    });
+    setComparisons([{ id: 0, namn: "", protein: 0, kcal: 0 }]);
+    setSortedComparisons([]);
+    setSortedComparisons([]);
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -210,16 +221,26 @@ export const ProteinCalc: React.FC = () => {
               );
             })}
           </CardContent>
-          <div className="p-4 pt-0">
+          <div className="flex-start inline-flex flex-col gap-2 p-6 pt-0">
             <Button
               size="sm"
-              variant="ghost"
+              variant="outline"
               className="gap-1"
               type="button"
               onClick={addComparison}
             >
               <PlusCircle className="h-3.5 w-3.5" />
               Lägg till livsmedel
+            </Button>
+            <Button
+              size="sm"
+              variant="destructive"
+              className="gap-1"
+              type="button"
+              onClick={clearAll}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Rensa alla
             </Button>
           </div>
           <CardFooter className="flex-col justify-center gap-2 border-t p-4">
