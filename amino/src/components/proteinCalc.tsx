@@ -56,7 +56,6 @@ export const ProteinCalc: React.FC = () => {
           required_error: "Kalorier är obligatoriskt",
           invalid_type_error: "Kalorier måste vara ett nummer",
         })
-        .int()
         .min(1, { message: "Kalorier behöver vara minst 1" }),
     ),
     protein: z.array(
@@ -65,7 +64,6 @@ export const ProteinCalc: React.FC = () => {
           required_error: "Protein är obligatoriskt",
           invalid_type_error: "Protein måste vara ett nummer",
         })
-        .int()
         .min(1, { message: "Protein behöver vara minst 1" }),
     ),
   });
